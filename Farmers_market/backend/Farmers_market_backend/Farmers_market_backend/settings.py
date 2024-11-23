@@ -1,4 +1,6 @@
 import pymysql
+from datetime import timedelta
+
 pymysql.install_as_MySQLdb()
 
 from pathlib import Path
@@ -28,9 +30,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'market',
     'users',
-    'chat'
+    'market',
+    'chat',
+    'products',
+    'orders',
+    'rest_framework',
+    'rest_framework_simplejwt'
 ]
 
 MIDDLEWARE = [
@@ -68,15 +74,11 @@ WSGI_APPLICATION = 'Farmers_market_backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'farmers_market',
-        'USER': 'root',
-        'PASSWORD': '123beTomas!',
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
-    }
+DATABASES = { 
+    'default': { 
+        'ENGINE': 'django.db.backends.sqlite3', 
+        'NAME': BASE_DIR / "db.sqlite3", 
+    } 
 }
 
 
@@ -120,3 +122,24 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTH_USER_MODEL = 'users.CustomUser'
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES' : (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'SIMPLE_PERMISSION_CLASSES' : (
+        'rest_framework.permissions.IsAuthenticated',
+    )
+}
+
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'USER_ID_FIELD': "user_id"
+}
